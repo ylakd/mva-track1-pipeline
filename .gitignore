@@ -1,0 +1,25 @@
+# NEVER commit patient data or variant-level derivatives
+work/
+data/
+*.vcf
+*.vcf.gz
+*.tbi
+*.fastq
+*.fastq.gz
+*.bam
+*.cram
+*.parquet
+myvariant_raw.json
+hpo_terms.json
+provenance.json
+verification.json
+selected_candidates.json
+submission.csv
+phenotype_*.csv
+scan_*.csv
+locus_review.csv
+variants_*.csv
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+.env

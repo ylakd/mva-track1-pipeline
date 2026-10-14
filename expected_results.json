@@ -1,0 +1,89 @@
+{
+ "_comment": "Numbers reported in the methods report (interactive session). check_results.py compares a fresh run with them; [value, tolerance].",
+ "qc_stats.json": {
+  "kept": [
+   4669249,
+   0
+  ],
+  "het": [
+   2889730,
+   0
+  ],
+  "hom_alt": [
+   1779519,
+   0
+  ]
+ },
+ "coding_stats.json": {
+  "coding_variants": [
+   26252,
+   0
+  ],
+  "coding_het": [
+   16748,
+   0
+  ],
+  "coding_hom_alt": [
+   9504,
+   0
+  ]
+ },
+ "annotation_stats.json": {
+  "multiallelic_not_annotated": [
+   50,
+   0
+  ],
+  "notfound": [
+   6,
+   3
+  ]
+ },
+ "scan_summary.json": {
+  "gene_assigned_local": [
+   26103,
+   5
+  ],
+  "scan_A_rows": [
+   2,
+   0
+  ],
+  "scan_B_genes": [
+   8,
+   0
+  ],
+  "scan_B_rows": [
+   20,
+   2
+  ],
+  "clinvar_pathogenic_coding": [
+   9,
+   1
+  ]
+ },
+ "phenotype_summary.json": {
+  "hpo_genes_N": [
+   5276,
+   50
+  ],
+  "genes_scored": [
+   24,
+   3
+  ],
+  "top_score": [
+   20.88,
+   0.1
+  ],
+  "runner_up_score": [
+   8.01,
+   0.1
+  ],
+  "p_gene_fit": [
+   0.008,
+   0.01
+  ],
+  "p_any_gene_combined": [
+   0.0265,
+   0.015
+  ]
+ }
+}
