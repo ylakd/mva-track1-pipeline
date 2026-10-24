@@ -58,6 +58,8 @@ W_HOM_MULT = 2.0
 PERM_N = 2000
 PERM_SEED = 42
 IC_TOL = 0.5
+BENCH_N = 500
+BENCH_SEED = 2026
 
 MYVARIANT_BATCH = 500
 MYVARIANT_FIELDS = ",".join([
@@ -104,7 +106,7 @@ FILES = {
     "locus": "locus_review.csv", "locus_summary": "locus_summary.json",
     "nmd": "nmd_check.json", "gnomad": "gnomad_check.json",
     "baf_chrom": "baf_by_chromosome.csv", "baf_bins": "baf_bins.csv", "baf_summary": "baf_summary.json",
-    "hpo_terms": "hpo_terms.json", "submission": "submission.csv", "provenance": "provenance.json",
+    "hpo_terms": "hpo_terms.json", "timings": "timings.json", "submission": "submission.csv", "provenance": "provenance.json",
 }
 
 

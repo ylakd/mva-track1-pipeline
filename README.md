@@ -28,6 +28,8 @@ null that corrects for choosing the top gene after the fact.
 | 10 | same | **Supp.** gnomAD v4 lookup (`unavailable` is NOT absence) | `gnomad_check.json` |
 | 11 | `stage11_baf` | **Supp.** Allele-fraction + depth imbalance screen, with detection limit | `baf_summary.json` |
 | 12 | `stage12_submission` | Write + validate the submission CSV (a pair is ONE row) | `submission.csv` |
+| 13 | `stage13_14_robustness` | **Test.** Multiverse sensitivity analysis over 1,152 analyst settings | `robustness_summary.json`, `robustness_grid.csv` |
+| 14 | same | **Test.** In-silico recovery benchmark (planted compound-het pairs, simulated phenotypes, two baselines, no-signal control) | `benchmark_summary.json`, `benchmark_replicates.csv` |
 
 Candidate selection is rule-based and contains **no gene names**.
 
@@ -40,7 +42,7 @@ Local:
 ```bash
 pip install -r requirements.txt
 export HF_TOKEN=hf_...
-python run_pipeline.py                 # stages 1-12 (outputs in ./work or $MVA_WORKDIR)
+python run_pipeline.py                 # stages 1-14 (timings.json records the run time of each) (outputs in ./work or $MVA_WORKDIR)
 python run_pipeline.py --stages 8-11   # supplementary analyses only
 python check_results.py                # compare with the reported numbers
 python -m unittest discover -s tests -v
@@ -67,3 +69,27 @@ The proband's HPO terms are not in the code: stage 1 reads them from the challen
 ## Licence and credits
 Add a licence before making the repository public. Data: Sage Bionetworks (CC BY 4.0). Resources: Ensembl, MyVariant.info,
 UniProt, Human Phenotype Ontology.
+
+---
+
+# Track 2 — fault-tree / FMEA triage of drug-repurposing hypotheses
+
+`mvapipe/track2/` ranks intervention hypotheses for a genotype class (here: biallelic *BUB1B*, nonsense + C-terminal
+missense) as a safety-engineering problem. **Outputs are hypotheses for laboratory follow-up, not treatment advice.**
+
+| Module | Purpose |
+|---|---|
+| `faulttree.py` | AND/OR fault trees, minimal cut sets, coverage of an intervention, minimal hitting sets |
+| `fmea.py` | RPN = S × O × D with O derived from evidence grade and computed coverage; hard stops (all reasons listed); rank-stability by perturbation |
+| `readthrough.py` | Stop-codon identity and flanking-base context for translational readthrough (needs Internet for two UCSC reference bases) |
+| `run.py` | Orchestrator, tables and figures: `python -m mvapipe.track2.run --out OUT [--no-network]` |
+
+Knowledge files (`knowledge/`): `bub1b_mva1_kb.json` (curated; scores are expert judgements with a written rationale and
+reference keys) and `TEMPLATE_new_genotype.json` (synthetic template: a new disease is a new JSON file, not new code).
+The optional readthrough step reads the Track 1 files `nmd_check.json` and `locus_summary.json` from the output
+directory and writes no genomic coordinates. Notebook: `notebook/mva_track2_framework.ipynb`
+(regenerate with `python notebook/build_track2_notebook.py`). Tests: `PYTHONPATH=. python -m pytest tests` (33 tests, offline).
+
+Additional Track 2 modules: `scenarios.py` (genotype-uncertainty sweep over r), `checkpoint_sim.py` (toy spindle-checkpoint
+model; direction of effect only; not fitted to data), `db_screen.py` (DGIdb / Open Targets / Enrichr queries; run with Internet)
+and `db_triage.py` (explicit hard-stop rules on the screen output; `python -m mvapipe.track2.db_triage --csv db_drug_gene.csv`).

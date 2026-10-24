@@ -1,0 +1,348 @@
+{
+ "_comment": "Curated knowledge for the BUB1B / MVA1 genotype class. Scores are expert judgements with rationale; every entry carries references (keys into 'references'). Hypotheses for follow-up, not treatment advice.",
+ "root_tree": {
+  "top": "R_TOP",
+  "nodes": {
+   "R_TOP": {
+    "type": "AND",
+    "label": "Insufficient BUBR1 function (biallelic)",
+    "children": [
+     "A1",
+     "A2"
+    ]
+   },
+   "A1": {
+    "type": "OR",
+    "label": "Nonsense allele (V1) provides no functional BUBR1",
+    "children": [
+     "B1",
+     "B2"
+    ]
+   },
+   "B1": {
+    "type": "BASIC",
+    "label": "Transcript removed by nonsense-mediated decay"
+   },
+   "B2": {
+    "type": "BASIC",
+    "label": "Truncated product lacks the pseudokinase domain and PP2A-B56 recruitment"
+   },
+   "A2": {
+    "type": "OR",
+    "label": "Missense allele (V2) provides no sufficient BUBR1",
+    "children": [
+     "B3",
+     "B4"
+    ]
+   },
+   "B3": {
+    "type": "BASIC",
+    "label": "Destabilised pseudokinase fold lowers protein level"
+   },
+   "B4": {
+    "type": "BASIC",
+    "label": "Reduced hyperphosphorylation and kinetochore PP2A-B56 function (inferred from the domain)"
+   }
+  }
+ },
+ "consequence_tree": {
+  "top": "C_TOP",
+  "nodes": {
+   "C_TOP": {
+    "type": "OR",
+    "label": "Systemic harm from chronic chromosomal instability",
+    "children": [
+     "Cq1",
+     "Cq2",
+     "Cq3",
+     "Cq4"
+    ]
+   },
+   "Cq1": {
+    "type": "BASIC",
+    "label": "Tumour initiation (cancer predisposition)"
+   },
+   "Cq2": {
+    "type": "BASIC",
+    "label": "Micronuclei, cGAS-STING and type I interferon signalling"
+   },
+   "Cq3": {
+    "type": "BASIC",
+    "label": "Cellular senescence and inflammatory secretome (SASP)"
+   },
+   "Cq4": {
+    "type": "BASIC",
+    "label": "Apoptosis of progenitors, growth failure and microcephaly"
+   }
+  }
+ },
+ "interventions": [
+  {
+   "id": "I1",
+   "label": "NAD+ precursor (niacin or nicotinamide riboside)",
+   "drugs": [
+    "niacin",
+    "nicotinamide riboside"
+   ],
+   "tier": "root",
+   "addresses": [
+    "B3"
+   ],
+   "approval": "supplement",
+   "E": 2,
+   "S": 4,
+   "D": 3,
+   "gating_biomarker": "BUBR1 protein level in patient-derived cells; blood NAD+",
+   "rationale": "SIRT2 raises BubR1 abundance in mice (North 2014), which is the mechanism relevant to a destabilised missense allele whose main measured defect is a lower protein level. No data in MVA patients or cells. Nicotinamide itself inhibits sirtuins at high dose and is avoided. Niacin is an approved medicine, nicotinamide riboside is a supplement. Severity includes the theoretical concern of supporting tumour growth.",
+   "refs": [
+    "north2014",
+    "pseudokinase2019"
+   ],
+   "tags": [
+    "cancer_risk"
+   ]
+  },
+  {
+   "id": "I2",
+   "label": "JAK1/2 inhibitor (baricitinib), only if an interferon signature is present",
+   "drugs": [
+    "baricitinib"
+   ],
+   "tier": "consequence",
+   "addresses": [
+    "Cq2"
+   ],
+   "approval": "approved_paediatric",
+   "E": 2,
+   "S": 8,
+   "D": 2,
+   "gating_biomarker": "blood interferon-stimulated gene score",
+   "rationale": "Chromosome missegregation produces micronuclei that activate cGAS-STING; baricitinib has been used in paediatric interferonopathies. No evidence yet of an interferon signature in MVA1, so use is conditional on measuring it. Severity is high because of infection risk and the class warning on malignancy in a child with cancer predisposition.",
+   "refs": [
+    "mackenzie2017",
+    "harding2017",
+    "bakhoum2018",
+    "sanchez2018"
+   ],
+   "tags": [
+    "cancer_risk",
+    "infection"
+   ]
+  },
+  {
+   "id": "I3",
+   "label": "Intermittent dasatinib (senolytic), alone or with quercetin",
+   "drugs": [
+    "dasatinib",
+    "quercetin"
+   ],
+   "tier": "consequence",
+   "addresses": [
+    "Cq3"
+   ],
+   "approval": "approved_paediatric",
+   "E": 3,
+   "S": 7,
+   "D": 4,
+   "gating_biomarker": "p16/p21 and SASP markers (imperfect)",
+   "rationale": "In BubR1-insufficient progeroid mice, genetic clearance of p16-positive cells delays age-related pathology, which is in vivo evidence in the same gene. Dasatinib itself was not tested in that model. Haematological and pleural toxicity matter in a child with a fragile marrow.",
+   "refs": [
+    "baker2011",
+    "baker2016",
+    "xu2018"
+   ],
+   "tags": [
+    "marrow"
+   ]
+  },
+  {
+   "id": "I4",
+   "label": "Translational readthrough (gentamicin) for the nonsense allele",
+   "drugs": [
+    "gentamicin"
+   ],
+   "tier": "root",
+   "addresses": [
+    "B2"
+   ],
+   "approval": "approved_off_label",
+   "E": 2,
+   "S": 7,
+   "D": 5,
+   "gating_biomarker": "full-length BUBR1 by immunoblot in patient-derived cells",
+   "rationale": "The nonsense allele creates a premature stop codon whose identity and local context are determined per patient (readthrough check; UGA has the highest basal readthrough), but NMD is predicted (B1 remains), so clearing B2 alone cannot restore the allele. Ataluren is not available in the EU (marketing authorisation not renewed, expired 28 March 2025) and is not FDA-approved. Aminoglycosides are oto- and nephrotoxic. Gentamicin response depends on local sequence context (a U at -1 is the main determinant).",
+   "refs": [
+    "floquet2012",
+    "ema_ataluren"
+   ],
+   "tags": [
+    "ototoxic"
+   ]
+  },
+  {
+   "id": "I5",
+   "label": "Type I interferon receptor blockade (anifrolumab), only if an interferon signature is present",
+   "drugs": [
+    "anifrolumab"
+   ],
+   "tier": "consequence",
+   "addresses": [
+    "Cq2"
+   ],
+   "approval": "approved_adult",
+   "E": 2,
+   "S": 7,
+   "D": 2,
+   "tags": [
+    "cancer_risk",
+    "infection"
+   ],
+   "gating_biomarker": "blood interferon-stimulated gene score",
+   "rationale": "Found by the database screen, not by the manual review. Monoclonal antibody against IFNAR1: blocks type I interferon signalling at the receptor, narrower than JAK1/2 inhibition. Approved for adult lupus; paediatric approval was not found, so any use in a child would be off-label. No evidence in MVA. Severity is provisional (7): infection risk and the class caution for immunosuppression in a cancer-prone child; one point below baricitinib because it is narrower, which is a judgement.",
+   "refs": [
+    "ema_saphnelo",
+    "mackenzie2017",
+    "harding2017"
+   ]
+  }
+ ],
+ "exclusions": [
+  {
+   "id": "X1",
+   "label": "MPS1/TTK inhibitors",
+   "class": "checkpoint abrogation",
+   "S": 10,
+   "E": 2,
+   "approval": "none",
+   "reason": "Abrogate the spindle checkpoint in every cell, and in this genotype every cell is already compromised; no healthy population to spare. Relevant only to a tumour, never as systemic therapy. Not approved."
+  },
+  {
+   "id": "X2",
+   "label": "Microtubule agents (benzimidazoles, taxanes, vinca alkaloids)",
+   "class": "spindle poisons",
+   "S": 9,
+   "E": 2,
+   "approval": "approved_adult",
+   "reason": "Perturb the spindle and raise the chance of mis-segregation. A weakened checkpoint allows slippage, so cells escape arrest with damage. The 'speed bump' idea is backwards.",
+   "opposite_mechanism": "perturbs the spindle"
+  },
+  {
+   "id": "X3",
+   "label": "HDAC inhibitors",
+   "class": "epigenetic",
+   "S": 8,
+   "E": 1,
+   "approval": "approved_adult",
+   "reason": "Histone hyperacetylation in mitosis has been reported to cause segregation defects; no support for strengthening the centromere."
+  },
+  {
+   "id": "X4",
+   "label": "ATR/CHK1 inhibitors",
+   "class": "checkpoint abrogation",
+   "S": 10,
+   "E": 2,
+   "approval": "none",
+   "reason": "Force mitotic entry with damage, which would be toxic to normal tissue; not approved."
+  },
+  {
+   "id": "X5",
+   "label": "Allosteric activators of kinesins",
+   "class": "bypass",
+   "S": 3,
+   "E": 1,
+   "approval": "none",
+   "reason": "No approved agent exists."
+  },
+  {
+   "id": "X6",
+   "label": "Fatty-acid-synthesis inhibition to starve aneuploid cells",
+   "class": "metabolic",
+   "S": 6,
+   "E": 1,
+   "approval": "none",
+   "reason": "Selective killing of aneuploid cells has not been shown in vivo and a systemic approach is unsafe in a child."
+  },
+  {
+   "id": "X7",
+   "label": "Direct cGAS or STING inhibitors",
+   "class": "innate immunity",
+   "S": 4,
+   "E": 1,
+   "approval": "none",
+   "reason": "No approved agent; the approved route into the pathway is JAK inhibition (I2)."
+  },
+  {
+   "id": "X8",
+   "label": "Nicotinamide as an NAD+ source",
+   "class": "NAD+",
+   "S": 4,
+   "E": 2,
+   "approval": "approved_adult",
+   "reason": "At high dose it inhibits sirtuins, the opposite of the intended effect; niacin or nicotinamide riboside are preferred.",
+   "opposite_mechanism": "inhibits sirtuins at high dose"
+  },
+  {
+   "id": "X9",
+   "label": "AMPK activation (metformin) for micronucleus clearance",
+   "class": "autophagy",
+   "S": 2,
+   "E": 1,
+   "approval": "approved_paediatric",
+   "reason": "Weak, indirect link to this mechanism."
+  }
+ ],
+ "references": {
+  "hanks2004": "Hanks S, et al. Constitutional aneuploidy and cancer predisposition caused by biallelic mutations in BUB1B. Nat Genet 2004;36:1159-61.",
+  "baker2004": "Baker DJ, et al. BubR1 insufficiency causes early onset of aging-associated phenotypes and infertility in mice. Nat Genet 2004;36:744-9.",
+  "baker2011": "Baker DJ, et al. Clearance of p16Ink4a-positive senescent cells delays ageing-associated disorders. Nature 2011;479:232-6.",
+  "baker2016": "Baker DJ, et al. Naturally occurring p16Ink4a-positive cells shorten healthy lifespan. Nature 2016;530:184-9.",
+  "north2014": "North BJ, et al. SIRT2 induces the checkpoint kinase BubR1 to increase lifespan. EMBO J 2014;33:1438-53.",
+  "pseudokinase2019": "The BUBR1 pseudokinase domain promotes efficient kinetochore PP2A-B56 recruitment to regulate spindle checkpoint silencing and chromosome alignment. bioRxiv 2019, doi:10.1101/733378 (preprint, not peer reviewed in the version consulted).",
+  "mackenzie2017": "Mackenzie KJ, et al. cGAS surveillance of micronuclei links genome instability to innate immunity. Nature 2017;548:461-5.",
+  "harding2017": "Harding SM, et al. Mitotic progression following DNA damage enables pattern recognition within micronuclei. Nature 2017;548:466-70.",
+  "bakhoum2018": "Bakhoum SF, et al. Chromosomal instability drives metastasis through a cytosolic DNA response. Nature 2018;553:467-72.",
+  "sanchez2018": "Montealegre Sanchez GA, et al. JAK1/2 inhibition with baricitinib in the treatment of autoinflammatory interferonopathies. J Clin Invest 2018;128:3041-52.",
+  "xu2018": "Xu M, et al. Senolytics improve physical function and increase lifespan in old age. Nat Med 2018;24:1246-56.",
+  "floquet2012": "Floquet C, et al. Statistical analysis of readthrough levels for nonsense mutations in mammalian cells reveals a major determinant of response to gentamicin. PLoS Genet 2012;8:e1002608.",
+  "ema_ataluren": "European Medicines Agency. Translarna (ataluren): European Public Assessment Report page; conditional marketing authorisation not renewed, expired 28 March 2025 (European Commission decision). Accessed 14 October 2026.",
+  "cimini2003": "Cimini D, et al. Histone hyperacetylation in mitosis prevents sister chromatid separation and produces chromosome segregation defects. Mol Biol Cell 2003;14:3821-33.",
+  "ema_saphnelo": "European Medicines Agency. Saphnelo (anifrolumab), EPAR page (indication: adults with systemic lupus erythematosus). Accessed 23 October 2026."
+ },
+ "uncertainty": {
+  "relevance_note": "r = P(the BUB1B pair is the disease-causing compound heterozygous genotype) = P(alleles in trans) x P(missense allele is hypomorphic). Root-tier interventions only help if it is true; consequence-tier ones act on harm that is present whatever the cause (and are gated by a biomarker).",
+  "r_grid": [
+   0.05,
+   0.1,
+   0.15,
+   0.2,
+   0.3,
+   0.4,
+   0.5,
+   0.6,
+   0.7,
+   0.8,
+   0.9,
+   1.0
+  ],
+  "modifier": {
+   "label": "additional heterozygous loss-of-function variant in a tumour-predisposition gene (identified in the same genome)",
+   "severity_delta": {
+    "cancer_risk": 1
+   }
+  }
+ },
+ "screen_review": {
+  "PACLITAXEL PROTEIN-BOUND": "microtubule agent (class X2); the BCL2 record is incidental",
+  "TIRBANIBULIN": "inhibits tubulin polymerisation as well as Src (class X2)",
+  "OBLIMERSEN": "BCL2 antisense; withdrawn or not marketed, treat as not available",
+  "VANDETANIB": "oncology kinase inhibitor with many targets; Src record not specific",
+  "BOSUTINIB": "oncology kinase inhibitor; same class concerns as dasatinib",
+  "IBRUTINIB": "oncology BTK inhibitor; Src record secondary",
+  "ACALABRUTINIB": "oncology BTK inhibitor; Src record secondary",
+  "VENETOCLAX": "BCL2 inhibitor, oncology; neutropenia; senolytic use only experimental",
+  "NAVITOCLAX": "BCL2/BCL-xL inhibitor; thrombocytopenia; not approved in most settings",
+  "AMLEXANOX": "TBK1 inhibitor; approval is regional (not scored)",
+  "LESTAURTINIB": "investigational; approval flag questionable",
+  "REPOTRECTINIB": "oncology kinase inhibitor; JAK2 record secondary"
+ }
+}

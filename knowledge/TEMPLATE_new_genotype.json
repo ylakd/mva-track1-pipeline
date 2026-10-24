@@ -1,0 +1,20 @@
+{
+ "_comment": "SYNTHETIC TEMPLATE to show the schema; not a real disease. Copy, replace the labels, evidence grades, severities, detection scores and references, and run: python -m mvapipe.track2.run --kb knowledge/your_file.json",
+ "root_tree": {"top": "R_TOP", "nodes": {
+  "R_TOP": {"type": "AND", "label": "Loss of function of gene X (biallelic)", "children": ["A1", "A2"]},
+  "A1": {"type": "OR", "label": "Allele 1 non-functional", "children": ["B1", "B2"]},
+  "A2": {"type": "OR", "label": "Allele 2 non-functional", "children": ["B3", "B4"]},
+  "B1": {"type": "BASIC", "label": "Mechanism 1 of allele 1"}, "B2": {"type": "BASIC", "label": "Mechanism 2 of allele 1"},
+  "B3": {"type": "BASIC", "label": "Mechanism 1 of allele 2"}, "B4": {"type": "BASIC", "label": "Mechanism 2 of allele 2"}}},
+ "consequence_tree": {"top": "C_TOP", "nodes": {
+  "C_TOP": {"type": "OR", "label": "Downstream harm", "children": ["Cq1", "Cq2"]},
+  "Cq1": {"type": "BASIC", "label": "Consequence 1"}, "Cq2": {"type": "BASIC", "label": "Consequence 2"}}},
+ "interventions": [
+  {"id": "I1", "label": "Example agent A", "drugs": ["A"], "tier": "root", "addresses": ["B3"], "approval": "approved_adult",
+   "E": 2, "S": 3, "D": 3, "gating_biomarker": "example", "rationale": "placeholder", "refs": []},
+  {"id": "I2", "label": "Example agent B", "drugs": ["B"], "tier": "consequence", "addresses": ["Cq1"], "approval": "approved_paediatric",
+   "E": 3, "S": 5, "D": 4, "gating_biomarker": "example", "rationale": "placeholder", "refs": []}],
+ "exclusions": [
+  {"id": "X1", "label": "Example rejected idea", "class": "example", "S": 9, "E": 1, "approval": "none", "reason": "placeholder"}],
+ "references": {}
+}

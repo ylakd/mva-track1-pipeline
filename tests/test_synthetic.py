@@ -26,6 +26,7 @@ from mvapipe import config as cfg  # noqa: E402
 from mvapipe import stage01_03_data_qc_coding as s1  # noqa: E402
 from mvapipe import stage04_05_annotate_scan as s4  # noqa: E402
 from mvapipe import stage06_phenotype as s6  # noqa: E402
+from mvapipe import stage13_14_robustness as s13  # noqa: E402
 from mvapipe import stage07_verify as s7  # noqa: E402
 from mvapipe import stage08_locus as s8  # noqa: E402
 from mvapipe import stage09_10_nmd_gnomad as s9  # noqa: E402
@@ -297,6 +298,32 @@ class PipelineTests(unittest.TestCase):
         p = Path(TMP) / "pheno.docx"
         d.save(p)
         self.assertEqual(s1.extract_hpo_terms(p), {"HP:9100001": "Synthetic term A", "HP:9100003": "Synthetic term C"})
+
+
+    def test_13_sensitivity_grid_and_helpers(self):
+        small = {"w_other": [0.5], "w_hom_mult": [2.0], "w_single": [0.25], "rare_af": [1e-3],
+                 "no_value": ["keep", "drop"], "term_weight": ["ic", "uniform"]}
+        sm = s13.stage13_robustness(grid=small)
+        self.assertEqual(sm["n_settings"], 4)
+        self.assertEqual(sm["top_gene_of_default_analysis"], "FAKEA")
+        self.assertGreaterEqual(sm["fraction_rank1"], 0.5)
+        self.assertTrue((cfg.workdir() / "robustness_grid.csv").exists())
+        self.assertEqual(s13.reweight({"a": 4.0}, "sqrt_ic"), {"a": 2.0})
+        self.assertEqual(s13.reweight({"a": 4.0}, "uniform"), {"a": 1.0})
+
+    def test_14_benchmark_runs_and_controls_behave(self):
+        out = s13.stage14_benchmark(n_targets=25, seed=1, n_terms=8, signal_levels=(0, 4))
+        self.assertEqual(out["n_targets"], 25)
+        hi, lo = out["by_signal_terms"]["4"], out["by_signal_terms"]["0"]
+        self.assertGreaterEqual(hi["combined"]["top1"], lo["combined"]["top1"])
+        self.assertGreater(hi["combined"]["top10"], 0.5)
+        a, b = hi["combined"]["top1_ci95"]
+        self.assertTrue(0 <= a <= hi["combined"]["top1"] <= b <= 1)
+        self.assertEqual(s13.wilson(0, 0)[0] != s13.wilson(0, 0)[0], True)
+        self.assertEqual(s13._rank({"x": 2.0, "y": 1.0, "z": 2.0}, "x"), 2.0)
+        self.assertEqual(s13._rank({"x": 0.0, "y": 1.0}, "x"), float("inf"))
+        df = pd.read_csv(cfg.workdir() / "benchmark_replicates.csv")
+        self.assertNotIn("pos", df.columns)
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@
 
 Stages: 1 data+provenance | 2 QC | 3 coding | 4 annotation | 5 recessive scan | 6 phenotype ranking +
 permutations | 7 verification | 8 [supp] locus review | 9 [supp] NMD | 10 [supp] gnomAD |
-11 [supp] allele-fraction screen | 12 submission CSV
+11 [supp] allele-fraction screen | 12 submission CSV | 13 [test] sensitivity | 14 [test] benchmark
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ import argparse, json, os, platform, sys, time
 
 def parse_stages(spec):
     if spec == "all":
-        return list(range(1, 13))
+        return list(range(1, 15))
     out = []
     for part in spec.split(","):
         if "-" in part:
@@ -55,6 +55,7 @@ def main(argv=None) -> int:
     from mvapipe import stage09_10_nmd_gnomad as s9
     from mvapipe import stage11_baf as s11
     from mvapipe import stage12_submission as s12
+    from mvapipe import stage13_14_robustness as s13
 
     registry = {
         1: ("data + provenance", lambda: s1.stage01_data(force=args.force)),
@@ -69,7 +70,10 @@ def main(argv=None) -> int:
         10: ("[supp] gnomAD lookup", s9.stage10_gnomad),
         11: ("[supp] allele-fraction screen", s11.stage11_baf),
         12: ("submission CSV", s12.stage12_submission),
+        13: ("[test] weight and threshold sensitivity", s13.stage13_robustness),
+        14: ("[test] in-silico recovery benchmark", s13.stage14_benchmark),
     }
+    timings = {}
     for n in parse_stages(args.stages):
         name, fn = registry[n]
         t0 = time.time()
@@ -82,7 +86,16 @@ def main(argv=None) -> int:
                 return 1
             continue
         print(json.dumps(res, indent=2, default=str)[:2500])
+        timings[n] = {"name": name, "seconds": round(time.time() - t0, 1)}
         print(f"(stage {n} took {time.time() - t0:.1f} s)")
+    if timings:
+        prev = {}
+        tf = cfg.path("timings")
+        if tf.exists():
+            prev = json.load(open(tf))
+        prev.update({str(k): v for k, v in timings.items()})
+        with open(tf, "w") as f:
+            json.dump(prev, f, indent=2)
     with open(cfg.workdir() / "environment.json", "w") as f:
         json.dump(versions(), f, indent=2)
     return 0

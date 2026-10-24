@@ -7,7 +7,7 @@ import nbformat as nbf
 ROOT = Path(__file__).resolve().parents[1]
 PKG = ["__init__.py", "config.py", "utils.py", "stage01_03_data_qc_coding.py", "stage04_05_annotate_scan.py",
        "stage06_phenotype.py", "stage07_verify.py", "stage08_locus.py", "stage09_10_nmd_gnomad.py",
-       "stage11_baf.py", "stage12_submission.py"]
+       "stage11_baf.py", "stage12_submission.py", "stage13_14_robustness.py"]
 cells = []
 md = lambda t: cells.append(nbf.v4.new_markdown_cell(t.strip()))
 code = lambda t: cells.append(nbf.v4.new_code_cell(t.strip()))
@@ -43,11 +43,12 @@ import mvapipe.stage08_locus as s8
 import mvapipe.stage09_10_nmd_gnomad as s9
 import mvapipe.stage11_baf as s11
 import mvapipe.stage12_submission as s12
+import mvapipe.stage13_14_robustness as s13
 assert hf_token(), "Add HF_TOKEN as a Kaggle secret (and accept the dataset terms) before continuing"
 print("working directory:", cfg.workdir())
 ''')
 md("## 1. Data and provenance\nVCF, index and phenotype document from Hugging Face; Ensembl GTF (GRCh38, r112); HPO gene–phenotype table. Records sizes and SHA-256 and checks the HPO terms against the document.")
-code('prov = s1.stage01_data()\nprint("HPO terms match the document:", prov.get("hpo_terms_match_config"))\npd.DataFrame(prov["files"]).T')
+code('prov = s1.stage01_data()\nprint("HPO terms read from the document:", prov.get("n_hpo_terms_in_document"))\npd.DataFrame(prov["files"]).T')
 md("## 2. Quality control\nPASS, non-reference, DP ≥ 10, GQ ≥ 30. **Every exclusion is counted** (the interactive run recorded only the final count).")
 code("pd.Series(s1.stage02_qc())")
 md("## 3. Coding restriction\nCDS ±2 bp (canonical splice sites), merged across isoforms.")
@@ -92,9 +93,14 @@ md("## 11. Supplementary — allele-fraction and depth screen\nHet-SNV allele fr
 code('bs = s11.stage11_baf()\nprint(json.dumps(bs, indent=2, default=str))\ndisplay(pd.read_csv(cfg.path("baf_chrom"), index_col=0).round(4))')
 md("## 12. Submission file\nOne row per prediction; the compound-heterozygous pair is **one row**; GRCh38 with `chr` prefix. The validator checks the schema and that each variant exists in the VCF.")
 code('sub = s12.stage12_submission()\nprint(sub)\ndisplay(pd.read_csv(cfg.path("submission")))')
-md("## 13. Compare with the reported numbers")
+md("## 13. Test of the method — sensitivity to analyst choices (stage 13)\nThe damage weights of the main ranking were fixed after the candidate was known. Here the ranking is recomputed over a grid of 3x4x4x3x2x4 = 1,152 reasonable settings (damage weights, rarity threshold, handling of variants without a population frequency, term weighting). Report: how often and by what margin the top gene stays first.")
+code('rb = s13.stage13_robustness()\nprint(json.dumps(rb, indent=2, default=str))')
+md("## 14. Test of the method — in-silico recovery benchmark (stage 14)\nA compound-heterozygous pair is planted in 500 random HPO genes; a phenotype of 8 terms is simulated (0, 2, 3 or 4 terms from the planted gene, the rest random); the proband's real damage background is kept (without the real candidate gene). Rank of the planted gene for the combined method and for two baselines. The phenotype comes from the same resource used for ranking, so this is an upper bound. Contains no patient coordinates.")
+code('bm = s13.stage14_benchmark()\nprint(json.dumps(bm, indent=2, default=str))')
+md("## 15. Compare with the reported numbers")
 code("!python check_results.py")
-md("## 14. Files\nDownload `submission.csv`. **Do not make variant-level files public** (`variants_*.parquet`, `myvariant_raw.json`, `locus_review.csv`, `annotated.parquet`).")
+code('import json, pathlib\nf = cfg.path("timings")\nprint(json.dumps(json.load(open(f)), indent=1) if f.exists() else "run_pipeline.py writes timings.json; in the notebook, time each cell instead")')
+md("## 16. Files\nDownload `submission.csv`. **Do not make variant-level files public** (`variants_*.parquet`, `myvariant_raw.json`, `locus_review.csv`, `annotated.parquet`).")
 code('for f in sorted(cfg.workdir().glob("*.json")) + sorted(cfg.workdir().glob("*.csv")):\n    print(f"{f.stat().st_size:>10,d}  {f.name}")')
 
 nb = nbf.v4.new_notebook(cells=cells)
